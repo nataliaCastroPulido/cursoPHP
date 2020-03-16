@@ -1,6 +1,6 @@
 <?php
 
-function show($message)
+/*function show($message)
 {
     echo "<p>$message</p>";
 }
@@ -10,6 +10,7 @@ abstract class Unit
 
     protected $hp = 40;
     Protected $name;
+    protected $armor;
 
     function __construct(string $name)
     {
@@ -46,5 +47,10 @@ abstract class Unit
     public function getHp():int
     {
         return $this->hp;
+    }
+
+    public function setArmor(Armor $armor = null)
+    {
+        $this->armor = $armor;
     }
 }
