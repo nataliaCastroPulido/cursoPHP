@@ -1,0 +1,19 @@
+{
+    "name": "nataliacastro/oop",
+    "description": "proyecto curso programación orientada a objetos",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "natalia.castro",
+            "email": "nati-ct4@hotmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "files" : ["src/helpers.php"],
+        "psr-4": {
+            "Nata\\":"src/"
+        }
+    }
+}

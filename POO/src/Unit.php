@@ -1,30 +1,51 @@
 <?php
 
-/*function show($message)
-{
-    echo "<p>$message</p>";
-}
+namespace Nata;
 
-abstract class Unit
+use Nata\Armors\MissingArmor;
+
+class Unit
 {
+    const MAX_DAMAGE = 10;
 
     protected $hp = 40;
-    Protected $name;
+    protected $name;
+    protected $weapon;
     protected $armor;
+    protected $logger;
 
-    function __construct(string $name)
+    public function __construct($name, weapon $weapon)
     {
         $this->name = $name;
+        $this->weapon = $weapon;
+        $this->armor = new Armors\MissingArmor();
     }
 
-    Public function move(string $direction):void
+    public static function createSoldier()
     {
-        show("{$this->name} avanza hacia $direction");
+        $soldier = new Unit('Ramm', new Weapons\BasicSword);
+        $soldier->setArmor(new Armors\BronzeArmor());
+
+        return $soldier;
     }
 
-    public function attack(Unit $opponent):void
+    public function setWeapon(Weapon $weapon)
     {
-        show("{$this->name} ataca a $opponent");
+        $this->weapon = $weapon;
+
+        return $this;
+    }
+
+    public function setArmor($armor)
+    {
+        $this->armor = $armor;
+
+        return $this;
+    }
+
+    public function setShield()
+    {
+        return $this;
     }
 
     public function getName():string
@@ -32,25 +53,53 @@ abstract class Unit
         return $this->name;
     }
 
-    public function die():void
-    {
-        show("{$this->name} ha fallecido");
-    }
-
-    public function setHp(int $points)
-    {
-        $this->hp = $points;
-
-        show("{$this->name} ahora tiene {$this->hp} puntos de vida");
-    }
-
     public function getHp():int
     {
         return $this->hp;
     }
 
-    public function setArmor(Armor $armor = null)
+    public function move($direction):void
     {
-        $this->armor = $armor;
+        Log::info( "{$this->name} camina hacia $direction");
     }
+
+    public function attack(Unit $opponent)
+    {
+        $attack = $this->weapon->createAttack();
+
+        Log::info($attack->getDescription($this, $opponent));
+
+        $opponent->takeDamage($attack);
+    }
+
+    public function takeDamage(Attack $attack)
+    {
+
+        $this->setHp($this->armor->absorbDamage($attack));
+
+        Log::info("{$this->name} ahora tiene {$this->hp} puntos de vida");
+
+        if ($this->hp <= 0)
+        {
+            $this->die();
+        }
+    }
+
+    protected function setHp($damage)
+    {
+        if ($damage > static::MAX_DAMAGE){
+            $damage = static::MAX_DAMAGE;
+        }
+
+        $this->hp = $this->hp - $damage;
+    }
+
+    public function die()
+    {
+       Log::info( "{$this->name} muere");
+
+        exit();
+    }
+
+
 }
